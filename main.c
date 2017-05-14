@@ -175,6 +175,7 @@ void initApp() {
     if (!readSettings()) {
         exit_nicely_e("initApp: failed to read settings\n");
     }
+    peer_client.sock_buf_size = sock_buf_size;
 #ifdef MODE_DEBUG
     puts("initApp: readSettings: done");
 #endif
@@ -212,7 +213,6 @@ void serverRun(int *state, int init_state) {
     char buf_in[sock_buf_size];
     char buf_out[sock_buf_size];
     uint8_t crc;
-    int i, j;
     crc = 0;
     memset(buf_in, 0, sizeof buf_in);
     acp_initBuf(buf_out, sizeof buf_out);
@@ -222,14 +222,15 @@ void serverRun(int *state, int init_state) {
 #endif
     }
 #ifdef MODE_DEBUG
-    dumpBuf(buf_in, sizeof buf_in);
+    acp_dumpBuf(buf_in, sizeof buf_in);
 #endif    
-    if (!crc_check(buf_in, sizeof buf_in)) {
+    if (!acp_crc_check(buf_in, sizeof buf_in)) {
 #ifdef MODE_DEBUG
         fputs("ERROR: serverRun: crc check failed\n", stderr);
 #endif
         return;
     }
+     int i, j;
     switch (buf_in[1]) {
         case ACP_CMD_APP_START:
             if (!init_state) {

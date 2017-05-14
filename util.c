@@ -14,15 +14,13 @@ FUN_FIFO_POP(PN)
 
 
 int sendStrPack(char qnf, char *cmd) {
-    extern size_t sock_buf_size;
     extern Peer peer_client;
-    return acp_sendStrPack(qnf, cmd, sock_buf_size, &peer_client);
+    return acp_sendStrPack(qnf, cmd,  &peer_client);
 }
 
 int sendBufPack(char *buf, char qnf, char *cmd_str) {
-    extern size_t sock_buf_size;
     extern Peer peer_client;
-    return acp_sendBufPack(buf, qnf, cmd_str, sock_buf_size, &peer_client);
+    return acp_sendBufPack(buf, qnf, cmd_str,  &peer_client);
 }
 
 void waitThread_ctl(char cmd) {
