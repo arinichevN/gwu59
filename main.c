@@ -6,7 +6,6 @@
 
 char pid_path[LINE_SIZE];
 char app_class[NAME_SIZE];
-char db_conninfo_settings[LINE_SIZE];
 char serial_path[LINE_SIZE];
 
 int app_state = APP_INIT;
@@ -34,7 +33,6 @@ FIFOItemList_PN pn_list = {.item = NULL, .length = 0, .pop_item = NULL, .push_it
 #include "m590.c"
 
 int readSettings() {
-    puts("read settings");
     FILE* stream = fopen(CONFIG_FILE, "r");
     if (stream == NULL) {
 #ifdef MODE_DEBUG
@@ -42,7 +40,8 @@ int readSettings() {
 #endif
         return 0;
     }
-
+    char s[LINE_SIZE];
+    fgets(s, LINE_SIZE, stream);
     int n;
     n = fscanf(stream, "%d\t%255s\t%d\t%ld\t%ld\t%d\t%255s\t%d\n",
             &sock_port,
@@ -56,9 +55,15 @@ int readSettings() {
             );
     if (n != 8) {
         fclose(stream);
+        #ifdef MODE_DEBUG
+        fputs("ERROR: readSettings: bad row format", stderr);
+#endif
         return 0;
     }
     fclose(stream);
+    #ifdef MODE_DEBUG
+    printf("readSettings: \n\tsock_port: %d, \n\tpid_path: %s, \n\tsock_buf_size: %d, \n\tcycle_duration: %ld sec %ld nsec, \n\tqueue_size: %ld, \n\tserial_path: %s, \n\tserial_baud_rate: %d\n", sock_port, pid_path, sock_buf_size,cycle_duration.tv_sec,cycle_duration.tv_nsec, b_count, serial_path, serial_baud_rate);
+#endif
     return 1;
 }
 
@@ -197,16 +202,7 @@ void initApp() {
 #ifdef MODE_DEBUG
     puts("initApp: initSerial: done");
 #endif
-#ifdef MODE_DEBUG
-    printf("initApp: PID: %d\n", proc_id);
-    printf("initApp: sock_port: %d\n", sock_port);
-    printf("initApp: pid_path: %s\n", pid_path);
-    printf("initApp: sock_buf_size: %d\n", sock_buf_size);
-    printf("initApp: cycle_duration: %ld(sec) %ld(nsec)\n", cycle_duration.tv_sec, cycle_duration.tv_nsec);
-    printf("initApp: b_count: %d\n", b_count);
-    printf("initApp: serial_path: %s\n", serial_path);
-    printf("initApp: serial_baud_rate: %d\n", serial_baud_rate);
-#endif
+
 }
 
 void serverRun(int *state, int init_state) {
@@ -396,6 +392,12 @@ void exit_nicely_e(char *s) {
 }
 
 int main(int argc, char** argv) {
+        if (geteuid() != 0) {
+#ifdef MODE_DEBUG
+        fprintf(stderr,"%s: root user expected\n", APP_NAME_STR);
+#endif
+        return (EXIT_FAILURE);
+    }
 #ifndef MODE_DEBUG
     daemon(0, 0);
 #endif
