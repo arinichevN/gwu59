@@ -56,7 +56,7 @@ int readSettings() {
     if (n != 8) {
         fclose(stream);
         #ifdef MODE_DEBUG
-        fputs("ERROR: readSettings: bad row format", stderr);
+        fputs("ERROR: readSettings: bad row format\n", stderr);
 #endif
         return 0;
     }
