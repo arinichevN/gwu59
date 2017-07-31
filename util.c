@@ -64,7 +64,7 @@ void printAll() {
     sendStr(q, &crc);
     snprintf(q, sizeof q, "PID: %d\n", proc_id);
     sendStr(q, &crc);
-    snprintf(q, sizeof q, "SMS buffer size: %d\n push item pointer: %p\n pop item pointer: %p\n", sms_list.length, sms_list.push_item, sms_list.pop_item);
+    snprintf(q, sizeof q, "SMS buffer size: %d\n push item pointer: %p\n pop item pointer: %p\n", sms_list.length, (void *) sms_list.push_item,(void *) sms_list.pop_item);
     sendStr(q, &crc);
     sendStr("+---------------------------------------------------------------------------------------------+\n", &crc);
     sendStr("|                                              SMS list                                       |\n", &crc);
@@ -76,15 +76,15 @@ void printAll() {
                 sms_list.item[i].data.phone_number,
                 sms_list.item[i].data.message,
                 sms_list.item[i].free,
-                &sms_list.item[i],
-                sms_list.item[i].next,
-                sms_list.item[i].prev
+                (void *) &sms_list.item[i],
+                (void *) sms_list.item[i].next,
+                (void *) sms_list.item[i].prev
                 );
         sendStr(q, &crc);
     }
     sendStr("+------------+--------------------------------+-----------+-----------+-----------+-----------+\n", &crc);
 
-    snprintf(q, sizeof q, "phone number buffer size: %d\n push item pointer: %p\n pop item pointer: %p\n", pn_list.length, pn_list.push_item, pn_list.pop_item);
+    snprintf(q, sizeof q, "phone number buffer size: %d\n push item pointer: %p\n pop item pointer: %p\n", pn_list.length, (void *) pn_list.push_item, (void *) pn_list.pop_item);
     sendStr(q, &crc);
     sendStr("+------------------------------------------------------------+\n", &crc);
     sendStr("|                       phone number list                    |\n", &crc);
@@ -95,9 +95,9 @@ void printAll() {
         snprintf(q, sizeof q, "|%12.12s|%11d|%11p|%11p|%11p|\n",
                 pn_list.item[i].data.phone_number,
                 pn_list.item[i].free,
-                &pn_list.item[i],
-                pn_list.item[i].next,
-                pn_list.item[i].prev
+                (void *) &pn_list.item[i],
+                (void *) pn_list.item[i].next,
+                (void *) pn_list.item[i].prev
                 );
         sendStr(q, &crc);
     }

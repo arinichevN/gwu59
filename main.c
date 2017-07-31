@@ -40,8 +40,7 @@ int readSettings() {
 #endif
         return 0;
     }
-    char s[LINE_SIZE];
-    fgets(s, LINE_SIZE, stream);
+    skipLine(stream);
     int n;
     n = fscanf(stream, "%d\t%255s\t%d\t%ld\t%ld\t%d\t%255s\t%d\n",
             &sock_port,
@@ -62,7 +61,7 @@ int readSettings() {
     }
     fclose(stream);
     #ifdef MODE_DEBUG
-    printf("readSettings: \n\tsock_port: %d, \n\tpid_path: %s, \n\tsock_buf_size: %d, \n\tcycle_duration: %ld sec %ld nsec, \n\tqueue_size: %ld, \n\tserial_path: %s, \n\tserial_baud_rate: %d\n", sock_port, pid_path, sock_buf_size,cycle_duration.tv_sec,cycle_duration.tv_nsec, b_count, serial_path, serial_baud_rate);
+    printf("readSettings: \n\tsock_port: %d, \n\tpid_path: %s, \n\tsock_buf_size: %d, \n\tcycle_duration: %ld sec %ld nsec, \n\tqueue_size: %d, \n\tserial_path: %s, \n\tserial_baud_rate: %d\n", sock_port, pid_path, sock_buf_size,cycle_duration.tv_sec,cycle_duration.tv_nsec, b_count, serial_path, serial_baud_rate);
 #endif
     return 1;
 }
@@ -208,8 +207,6 @@ void initApp() {
 void serverRun(int *state, int init_state) {
     char buf_in[sock_buf_size];
     char buf_out[sock_buf_size];
-    uint8_t crc;
-    crc = 0;
     memset(buf_in, 0, sizeof buf_in);
     acp_initBuf(buf_out, sizeof buf_out);
     if (recvfrom(sock_fd, buf_in, sizeof buf_in, 0, (struct sockaddr*) (&(peer_client.addr)), &(peer_client.addr_size)) < 0) {
@@ -226,7 +223,7 @@ void serverRun(int *state, int init_state) {
 #endif
         return;
     }
-     int i, j;
+     int i;
     switch (buf_in[1]) {
         case ACP_CMD_APP_START:
             if (!init_state) {
