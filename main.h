@@ -12,7 +12,7 @@
 #include "lib/serial.h"
 #include "lib/acp/main.h"
 #include "lib/acp/app.h"
-#include "lib/acp/gwu59.h"
+#include "lib/acp/mobile.h"
 
 #define APP_NAME gwu59
 #define APP_NAME_STR TOSTRING(APP_NAME)
@@ -33,6 +33,7 @@
 
 #define PROG_LIST_LOOP_ST  {Prog *curr = prog_list.top; while (curr != NULL) {
 #define PROG_LIST_LOOP_SP curr = curr->next; }} 
+
 
 typedef struct {
     char phone_number[PHONE_NUMBER_SIZE];

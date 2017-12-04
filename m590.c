@@ -29,7 +29,6 @@ void m590_responseReadAll(int fd) {
 
 int m590_responseIsOK(int fd) {
     uint8_t x;
-    size_t n = 0;
     char state = 0;
     while (read(fd, &x, 1) == 1) {
         switch (state) {
