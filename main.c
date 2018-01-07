@@ -1,7 +1,3 @@
-/*
- * gwu59
- */
-
 #include "main.h"
 
 char pid_path[LINE_SIZE];
@@ -20,8 +16,8 @@ int serial_baud_rate = -1;
 Peer peer_client = {.fd = &sock_fd, .addr_size = sizeof peer_client.addr};
 struct timespec cycle_duration = {0, 0};
 DEF_THREAD
-S2List s2l = {NULL, 0};
-S1List s1l = {NULL, 0};
+S2List s2l;
+S1List s1l;
 
 
 FIFOItemList_SMS sms_list = {.item = NULL, .length = 0, .pop_item = NULL, .push_item = NULL};
@@ -200,7 +196,7 @@ void serverRun(int *state, int init_state) {
     SERVER_HEADER
     SERVER_APP_ACTIONS
     if (ACP_CMD_IS(ACP_CMD_MOBILE_SEND_SMS)) {
-        acp_requestDataToS2List(&request, &s2l, sms_list.length);
+        acp_requestDataToS2List(&request, &s2l);
         if (s2l.length <= 0) {
             return;
         }
@@ -213,7 +209,7 @@ void serverRun(int *state, int init_state) {
         }
         return;
     } else if (ACP_CMD_IS(ACP_CMD_MOBILE_RING)) {
-        acp_requestDataToS1List(&request, &s1l, pn_list.length);
+        acp_requestDataToS1List(&request, &s1l);
         if (s1l.length <= 0) {
             return;
         }

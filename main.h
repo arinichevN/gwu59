@@ -44,9 +44,9 @@ typedef struct {
     char phone_number[PHONE_NUMBER_SIZE];
 } PN;
 
-DEF_FIFO_LIST(SMS)
+DEC_FIFO_LIST(SMS)
 
-DEF_FIFO_LIST(PN)
+DEC_FIFO_LIST(PN)
 
 extern int readSettings();
 
@@ -56,13 +56,13 @@ extern int initData();
 
 extern void initApp();
 
-DEF_FUN_FIFO_PUSH(SMS)
+DEC_FUN_FIFO_PUSH(SMS)
 
-DEF_FUN_FIFO_POP(SMS)
+DEC_FUN_FIFO_POP(SMS)
 
-DEF_FUN_FIFO_PUSH(PN)
+DEC_FUN_FIFO_PUSH(PN)
 
-DEF_FUN_FIFO_POP(PN)
+DEC_FUN_FIFO_POP(PN)
 
 extern int sendSMS(SMS item, int fd);
 

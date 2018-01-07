@@ -152,7 +152,7 @@ void regonfhc_control(RegOnfHC *item) {
         case REG_OFF:
             break;
         default:
-            item->state = REG_INIT;
+            item->state = REG_OFF;
             break;
     }
 #ifdef MODE_DEBUG
@@ -172,6 +172,13 @@ void regonfhc_disable(RegOnfHC *item) {
     item->state = REG_DISABLE;
 }
 
+int regonfhc_getEnabled(const RegOnfHC *item) {
+    if(item->state==REG_DISABLE || item->state==REG_OFF){
+        return 0;
+    }
+    return 1;
+}
+
 void regonfhc_setCoolerDelta(RegOnfHC *item, float value) {
     item->cooler.delta = value;
     if (item->state == REG_BUSY && item->state_r == REG_COOLER) {
@@ -188,9 +195,11 @@ void regonfhc_setHeaterDelta(RegOnfHC *item, float value) {
 
 void regonfhc_setGoal(RegOnfHC *item, float value) {
     item->goal = value;
+/*
     if (item->state == REG_BUSY) {
         item->state = REG_INIT;
     }
+*/
 }
 
 void regonfhc_setChangeGap(RegOnfHC *item, int value) {
